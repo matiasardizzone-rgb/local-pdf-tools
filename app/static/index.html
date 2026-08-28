@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local PDF Tools</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InNnIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJmYmY4NyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzE0ODU2YSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE2IDgpIj48cGF0aCBkPSJNODQgNiBMMTU2IDMwIFY5NiBDMTU2IDE0MCAxMjIgMTY2IDg0IDE3OCBDNDYgMTY2IDEyIDE0MCAxMiA5NiBWMzAgWiIgZmlsbD0idXJsKCNzZykiLz48cGF0aCBkPSJNODQgMTggTDE0NSAzOCBWOTYgQzE0NSAxMzIgMTE2IDE1NCA4NCAxNjUgQzUyIDE1NCAyMyAxMzIgMjMgOTYgVjM4IFoiIGZpbGw9IiMwZjFhMTciIG9wYWNpdHk9IjAuMzIiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1NiA1MikiPjxwYXRoIGQ9Ik0wIDAgSDM2IEw1NCAxOCBWODAgSDAgWiIgZmlsbD0iI2Y0ZjdmNSIvPjxwYXRoIGQ9Ik0zNiAwIEw1NCAxOCBIMzYgWiIgZmlsbD0iI2MzZDRjYyIvPjxyZWN0IHg9IjEwIiB5PSIzMCIgd2lkdGg9IjM0IiBoZWlnaHQ9IjMuNiIgcng9IjEuOCIgZmlsbD0iIzhmYTc5ZCIvPjxyZWN0IHg9IjEwIiB5PSI0MSIgd2lkdGg9IjM0IiBoZWlnaHQ9IjMuNiIgcng9IjEuOCIgZmlsbD0iIzhmYTc5ZCIvPjxyZWN0IHg9IjEwIiB5PSI1MiIgd2lkdGg9IjIyIiBoZWlnaHQ9IjMuNiIgcng9IjEuOCIgZmlsbD0iIzhmYTc5ZCIvPjx0ZXh0IHg9IjEwIiB5PSI3MiIgZm9udC1mYW1pbHk9IkhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjYzAzOTJiIj5QREY8L3RleHQ+PC9nPjwvZz48L3N2Zz4=">
+    <style>
+        :root { --bg-primary: #0f1a17; --bg-secondary: #152522; --bg-gradient: linear-gradient(135deg, #0f1a17 0%, #152522 100%); --text-primary: #f2f7f4; --text-secondary: #8fd9bd; --text-muted: #6b8a80; --text-footer: #4c6459; --accent: #2fbf87; --accent-dark: #14856a; --border-color: rgba(47, 191, 135, 0.2); --border-hover: rgba(47, 191, 135, 0.4); --card-bg: rgba(47, 191, 135, 0.05); --card-border: rgba(47, 191, 135, 0.2); --btn-bg: rgba(47, 191, 135, 0.1); --btn-border: rgba(47, 191, 135, 0.3); --btn-hover: rgba(47, 191, 135, 0.2); --btn-active: rgba(47, 191, 135, 0.3); --workspace-bg: rgba(15, 26, 23, 0.6); --upload-bg: rgba(47, 191, 135, 0.05); --file-bg: rgba(47, 191, 135, 0.1); --status-success-bg: rgba(47, 191, 135, 0.2); --status-error-bg: rgba(226, 87, 76, 0.2); --status-processing-bg: rgba(143, 217, 189, 0.2); --status-warning-bg: rgba(243, 156, 18, 0.2); --shadow: rgba(0, 0, 0, 0.3); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gradient); color: var(--text-primary); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { margin-bottom: 40px; text-align: center; }
+        .header h1 { color: var(--text-secondary); font-size: 48px; margin-bottom: 8px; }
+        .header p { color: #9dbdb0; font-style: italic; font-size: 18px; }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .tool-category { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px; }
+        .tool-category h2 { color: var(--text-secondary); font-size: 18px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+        .tool-btn { background: var(--btn-bg); border: 1px solid var(--btn-border); color: var(--text-secondary); padding: 12px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; width: 100%; margin-bottom: 10px; text-align: left; transition: all 0.3s; }
+        .tool-btn:hover { background: var(--btn-hover); transform: translateX(4px); border-color: var(--accent); }
+        .workspace { background: var(--workspace-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 32px; min-height: 400px; display: none; }
+        .workspace.active { display: block; }
+        .workspace h3 { color: var(--text-secondary); font-size: 24px; margin-bottom: 24px; }
+        .upload-area { border: 2px dashed var(--border-hover); border-radius: 8px; padding: 40px; text-align: center; margin-bottom: 24px; cursor: pointer; transition: all 0.3s; }
+        .upload-area:hover { border-color: var(--accent); background: var(--upload-bg); }
+        .upload-area input[type="file"] { display: none; }
+        .action-btn { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); color: var(--text-primary); border: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 16px; transition: all 0.3s; }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(47, 191, 135, 0.4); }
+        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .back-btn { background: transparent; border: 1px solid var(--text-muted); color: var(--text-secondary); padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; transition: all 0.3s; }
+        .back-btn:hover { background: var(--btn-hover); border-color: var(--accent); }
+        .footer { text-align: center; padding: 24px; color: var(--text-footer); font-size: 13px; border-top: 1px solid var(--border-color); margin-top: 40px; }
+        .status { padding: 12px; border-radius: 6px; margin: 12px 0; display: none; }
+        .status.show { display: block; }
+        .status.success { background: var(--status-success-bg); border: 1px solid var(--accent); color: var(--text-secondary); }
+        .status.error { background: var(--status-error-bg); border: 1px solid #e2574c; color: #f5b7b1; }
+        .status.processing { background: var(--status-processing-bg); border: 1px solid var(--text-secondary); color: var(--text-secondary); }
+        .status.warning { background: var(--status-warning-bg); border: 1px solid #f39c12; color: #f39c12; }
+        .file-list { margin: 20px 0; padding: 16px; background: var(--card-bg); border-radius: 8px; }
+        .file-item { padding: 8px 12px; margin: 4px 0; background: var(--file-bg); border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .compress-options { margin: 20px 0; padding: 16px; background: var(--card-bg); border-radius: 8px; }
+        .compress-options label { color: var(--text-secondary); display: block; margin-bottom: 8px; }
+        .compress-options select { width: 100%; padding: 8px; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Local PDF Tools</h1>
+            <p>Tus documentos nunca salen de tu máquina</p>
+        </div>
+        
+        <div class="tools-grid">
+            <div class="tool-category">
+                <h2>Combinar y separar</h2>
+                <button class="tool-btn" onclick="showWorkspace('unir')">Unir PDFs</button>
+                <button class="tool-btn" onclick="showWorkspace('extraer')">Extraer páginas</button>
+                <button class="tool-btn" onclick="showWorkspace('dividir')">Dividir PDF</button>
+            </div>
+            <div class="tool-category">
+                <h2>Modificar</h2>
+                <button class="tool-btn" onclick="showWorkspace('comprimir')">Comprimir PDF</button>
+                <button class="tool-btn" onclick="showWorkspace('rotar')">Rotar páginas</button>
+            </div>
+            <div class="tool-category">
+                <h2>Crear y revisar</h2>
+                <button class="tool-btn" onclick="showWorkspace('pdf-a-word')">PDF a Word</button>
+                <button class="tool-btn" onclick="showWorkspace('office-to-pdf')">Office a PDF</button>
+                <button class="tool-btn" onclick="showWorkspace('ocr')">OCR (Extraer texto)</button>
+            </div>
+        </div>
+
+        <!-- UNIR PDFs -->
+        <div id="workspace-unir" class="workspace">
+            <button class="back-btn" onclick="backToMenu()">← Volver al menú</button>
+            <h3>Unir PDFs</h3>
+            <div class="upload-area" onclick="document.getElementById('file-unir').click()">
+                <input type="file" id="file-unir" multiple accept=".pdf" onchange="handleFilesUnir(this.files)">
+                <p>Seleccioná archivos PDF</p>
+            </div>
+            <div id="file-list-unir" class="file-list" style="display: none;"></div>
+            <div id="status-unir" class="status"></div>
+            <button id="btn-unir" class="action-btn" onclick="unirPDFs()" disabled style="display: none;">Unir PDFs</button>
+        </div>
+
+        <!-- COMPRIMIR PDF -->
+        <div id="workspace-comprimir" class="workspace">
+            <button class="back-btn" onclick="backToMenu()">← Volver al menú</button>
+            <h3>Comprimir PDF</h3>
+            <div class="upload-area" onclick="document.getElementById('file-compress').click()">
+                <input type="file" id="file-compress" accept=".pdf" onchange="handleFileCompress(this.files)">
+                <p>Seleccioná un PDF</p>
+            </div>
+            <div id="compress-options" class="compress-options" style="display:none;">
+                <label>Nivel de compresión:</label>
+                <select id="compress-level">
+                    <option value="baja">Baja (Mantiene mayor calidad)</option>
+                    <option value="media" selected>Media (Recomendado)</option>
+                    <option value="alta">Alta (Menor tamaño, puede perder calidad)</option>
+                </select>
+            </div>
+            <div id="status-compress" class="status"></div>
+            <button id="btn-compress" class="action-btn" onclick="comprimirPDF()" disabled style="display: none;">Comprimir</button>
+        </div>
+
+        <!-- PDF A WORD -->
+        <div id="workspace-pdf-a-word" class="workspace">
+            <button class="back-btn" onclick="backToMenu()">← Volver al menú</button>
+            <h3>PDF a Word</h3>
+            <div class="upload-area" onclick="document.getElementById('file-word').click()">
+                <input type="file" id="file-word" accept=".pdf" onchange="handleFileWord(this.files)">
+                <p>Seleccioná un PDF</p>
+            </div>
+            <div id="status-word" class="status"></div>
+            <button id="btn-word" class="action-btn" onclick="convertirAWord()" disabled style="display: none;">Convertir</button>
+        </div>
+
+        <!-- OFFICE A PDF -->
+        <div id="workspace-office-to-pdf" class="workspace">
+            <button class="back-btn" onclick="backToMenu()">← Volver al menú</button>
+            <h3>Office a PDF</h3>
+            <div class="upload-area" onclick="document.getElementById('file-office').click()">
+                <input type="file" id="file-office" accept=".doc,.docx,.xls,.xlsx" onchange="handleFileOffice(this.files)">
+                <p>Seleccioná un archivo de Office</p>
+            </div>
+            <div id="status-office" class="status"></div>
+            <button id="btn-office" class="action-btn" onclick="convertirOfficeAPdf()" disabled style="display: none;">Convertir</button>
+        </div>
+
+        <!-- OCR -->
+        <div id="workspace-ocr" class="workspace">
+            <button class="back-btn" onclick="backToMenu()">← Volver al menú</button>
+            <h3>OCR - Extraer texto</h3>
+            <div class="upload-area" onclick="document.getElementById('file-ocr').click()">
+                <input type="file" id="file-ocr" accept=".pdf" onchange="handleFileOCR(this.files)">
+                <p>Seleccioná un PDF escaneado</p>
+            </div>
+            <div id="status-ocr" class="status"></div>
+            <button id="btn-ocr-txt" class="action-btn" onclick="extraerTextoOCR()" disabled style="display: none;">Extraer a TXT</button>
+            <button id="btn-ocr-pdf" class="action-btn" onclick="aplicarOCRaPDF()" disabled style="display: none;">Aplicar OCR al PDF</button>
+        </div>
+
+        <!-- EXTRAER PÁGINAS -->
+        <div id="workspace-extraer" class="workspace">
+            <button class="back-btn" onclick="backToMenu()">← Volver al menú</button>
+            <h3>Extraer páginas</h3>
+            <div class="upload-area" onclick="document.getElementById('file-extract').click()">
+                <input type="file" id="file-extract" accept=".pdf" onchange="handleFileExtract(this.files)">
+                <p>Seleccioná un PDF</p>
+            </div>
+            <div id="status-extract" class="status"></div>
+            <button id="btn-extract" class="action-btn" onclick="extraerPaginas()" disabled style="display: none;">Extraer páginas</button>
+        </div>
+
+        <!-- DIVIDIR PDF -->
+        <div id="workspace-dividir" class="workspace">
+            <button class="back-btn" onclick="backToMenu()">← Volver al menú</button>
+            <h3>Dividir PDF</h3>
+            <div class="upload-area" onclick="document.getElementById('file-split').click()">
+                <input type="file" id="file-split" accept=".pdf" onchange="handleFileSplit(this.files)">
+                <p>Seleccioná un PDF</p>
+            </div>
+            <div id="status-split" class="status"></div>
+            <button id="btn-split" class="action-btn" onclick="generarDivision()" disabled style="display: none;">Dividir PDF</button>
+        </div>
+
+        <!-- ROTAR PÁGINAS -->
+        <div id="workspace-rotar" class="workspace">
+            <button class="back-btn" onclick="backToMenu()">← Volver al menú</button>
+            <h3>Rotar páginas</h3>
+            <div class="upload-area" onclick="document.getElementById('file-rotate').click()">
+                <input type="file" id="file-rotate" accept=".pdf" onchange="handleFileRotate(this.files)">
+                <p>Seleccioná un PDF</p>
+            </div>
+            <div id="status-rotate" class="status"></div>
+            <button id="btn-rotate" class="action-btn" onclick="generarRotacion()" disabled style="display: none;">Guardar PDF rotado</button>
+        </div>
+
+        <div class="footer">
+            <p>Local PDF Tools v0.2.0 · Matias Ardizzone</p>
+        </div>
+    </div>
+
+    <script>
+        let pdfFilesUnir = [], fileWord = null, fileCompress = null, fileOffice = null, fileOCR = null, fileExtract = null, fileSplit = null, fileRotate = null;
+
+        function showWorkspace(id) {
+            document.querySelectorAll('.workspace').forEach(w => w.classList.remove('active'));
+            const ws = document.getElementById('workspace-' + id);
+            if(ws) {
+                ws.classList.add('active');
+                ws.scrollIntoView({behavior:'smooth'});
+            }
+        }
+
+        function backToMenu() {
+            document.querySelectorAll('.workspace').forEach(w => w.classList.remove('active'));
+            window.scrollTo({top:0, behavior:'smooth'});
+        }
+
+        function showStatus(id, msg, type) {
+            const s = document.getElementById(id);
+            s.innerHTML = msg;
+            s.className = 'status show ' + type;
+        }
+
+        // UNIR PDFs
+        function handleFilesUnir(files) {
+            pdfFilesUnir = Array.from(files).filter(f => f.type === 'application/pdf' || f.name.endsWith('.pdf'));
+            const fl = document.getElementById('file-list-unir'), btn = document.getElementById('btn-unir');
+            if(pdfFilesUnir.length === 0) {
+                fl.style.display = 'none';
+                btn.style.display = 'none';
+                btn.disabled = true;
+                showStatus('status-unir', 'No se seleccionaron PDFs', 'error');
+                return;
+            }
+            fl.innerHTML = '<strong>Archivos:</strong>';
+            pdfFilesUnir.forEach((f, i) => {
+                const d = document.createElement('div');
+                d.className = 'file-item';
+                d.innerHTML = '<span>' + (i+1) + '. ' + f.name + '</span><button onclick="removeFileUnir('+i+')" style="background:none;border:none;color:#e2574c;cursor:pointer;">X</button>';
+                fl.appendChild(d);
+            });
+            fl.style.display = 'block';
+            btn.style.display = 'inline-block';
+            btn.disabled = pdfFilesUnir.length < 2;
+            showStatus('status-unir', pdfFilesUnir.length < 2 ? 'Selecciona al menos 2 PDFs' : 'Listo para unir', pdfFilesUnir.length < 2 ? 'processing' : 'success');
+        }
+
+        function removeFileUnir(i) {
+            pdfFilesUnir.splice(i, 1);
+            handleFilesUnir(pdfFilesUnir);
+        }
+
+        async function unirPDFs() {
+            if(pdfFilesUnir.length < 2) return;
+            showStatus('status-unir', 'Procesando...', 'processing');
+            const btn = document.getElementById('btn-unir');
+            btn.disabled = true;
+            btn.textContent = 'Uniendo...';
+            const fd = new FormData();
+            pdfFilesUnir.forEach(f => fd.append('files', f));
+            try {
+                const res = await fetch(window.location.origin + '/api/merge', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const data = await res.json();
+                const savePath = await window.pywebview.api.saveFileDialog('unido.pdf');
+                if(savePath) {
+                    await window.pywebview.api.saveFile(data.file_path, savePath);
+                    showStatus('status-unir', 'PDF unido guardado en: <br><strong>' + savePath + '</strong>', 'success');
+                } else {
+                    showStatus('status-unir', 'Operación cancelada', 'warning');
+                }
+            } catch(e) {
+                showStatus('status-unir', 'Error: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Unir PDFs';
+            }
+        }
+
+        // COMPRIMIR PDF
+        function handleFileCompress(files) {
+            if(!files.length) {
+                document.getElementById('compress-options').style.display = 'none';
+                return;
+            }
+            fileCompress = files[0];
+            document.getElementById('status-compress').textContent = 'Seleccionado: ' + fileCompress.name;
+            document.getElementById('status-compress').className = 'status show success';
+            document.getElementById('compress-options').style.display = 'block';
+            document.getElementById('btn-compress').style.display = 'inline-block';
+            document.getElementById('btn-compress').disabled = false;
+        }
+
+        async function comprimirPDF() {
+            if(!fileCompress) return;
+            showStatus('status-compress', 'Comprimiendo...', 'processing');
+            const btn = document.getElementById('btn-compress');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            const fd = new FormData();
+            fd.append('file', fileCompress);
+            fd.append('level', document.getElementById('compress-level').value);
+            try {
+                const res = await fetch(window.location.origin + '/api/compress', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const data = await res.json();
+                const savePath = await window.pywebview.api.saveFileDialog(fileCompress.name.replace('.pdf', '_comprimido.pdf'));
+                if(savePath) {
+                    await window.pywebview.api.saveFile(data.file_path, savePath);
+                    showStatus('status-compress', 'PDF comprimido guardado en: <br><strong>' + savePath + '</strong>', 'success');
+                } else {
+                    showStatus('status-compress', 'Operación cancelada', 'warning');
+                }
+            } catch(e) {
+                showStatus('status-compress', 'Error: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Comprimir';
+            }
+        }
+
+        // PDF A WORD
+        function handleFileWord(files) {
+            if(!files.length) return;
+            fileWord = files[0];
+            document.getElementById('status-word').textContent = 'Seleccionado: ' + fileWord.name;
+            document.getElementById('status-word').className = 'status show success';
+            document.getElementById('btn-word').style.display = 'inline-block';
+            document.getElementById('btn-word').disabled = false;
+        }
+
+        async function convertirAWord() {
+            if(!fileWord) return;
+            showStatus('status-word', 'Convirtiendo...', 'processing');
+            const btn = document.getElementById('btn-word');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            const fd = new FormData();
+            fd.append('file', fileWord);
+            try {
+                const res = await fetch(window.location.origin + '/api/pdf-to-word', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const data = await res.json();
+                const savePath = await window.pywebview.api.saveFileDialog(fileWord.name.replace('.pdf', '.docx'));
+                if(savePath) {
+                    await window.pywebview.api.saveFile(data.file_path, savePath);
+                    showStatus('status-word', 'Word guardado en: <br><strong>' + savePath + '</strong>', 'success');
+                } else {
+                    showStatus('status-word', 'Operación cancelada', 'warning');
+                }
+            } catch(e) {
+                showStatus('status-word', 'Error: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Convertir';
+            }
+        }
+
+        // OFFICE A PDF
+        function handleFileOffice(files) {
+            if(!files.length) return;
+            fileOffice = files[0];
+            document.getElementById('status-office').textContent = 'Seleccionado: ' + fileOffice.name;
+            document.getElementById('status-office').className = 'status show success';
+            document.getElementById('btn-office').style.display = 'inline-block';
+            document.getElementById('btn-office').disabled = false;
+        }
+
+        async function convertirOfficeAPdf() {
+            if(!fileOffice) return;
+            showStatus('status-office', 'Convirtiendo...', 'processing');
+            const btn = document.getElementById('btn-office');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            const fd = new FormData();
+            fd.append('file', fileOffice);
+            try {
+                const res = await fetch(window.location.origin + '/api/office-to-pdf', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const data = await res.json();
+                const savePath = await window.pywebview.api.saveFileDialog(fileOffice.name.replace(/\.[^/.]+$/, '') + '.pdf');
+                if(savePath) {
+                    await window.pywebview.api.saveFile(data.file_path, savePath);
+                    showStatus('status-office', 'PDF guardado en: <br><strong>' + savePath + '</strong>', 'success');
+                } else {
+                    showStatus('status-office', 'Operación cancelada', 'warning');
+                }
+            } catch(e) {
+                showStatus('status-office', 'Error: ' + e.message, 'warning');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Convertir';
+            }
+        }
+
+        // OCR
+        function handleFileOCR(files) {
+            if(!files.length) {
+                document.getElementById('btn-ocr-txt').style.display = 'none';
+                document.getElementById('btn-ocr-pdf').style.display = 'none';
+                return;
+            }
+            fileOCR = files[0];
+            document.getElementById('status-ocr').textContent = 'Seleccionado: ' + fileOCR.name;
+            document.getElementById('status-ocr').className = 'status show success';
+            document.getElementById('btn-ocr-txt').style.display = 'inline-block';
+            document.getElementById('btn-ocr-pdf').style.display = 'inline-block';
+            document.getElementById('btn-ocr-txt').disabled = false;
+            document.getElementById('btn-ocr-pdf').disabled = false;
+        }
+
+        async function extraerTextoOCR() {
+            if(!fileOCR) return;
+            showStatus('status-ocr', 'Procesando OCR (puede tardar)...', 'processing');
+            const btn = document.getElementById('btn-ocr-txt');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            const fd = new FormData();
+            fd.append('file', fileOCR);
+            try {
+                const res = await fetch(window.location.origin + '/api/ocr', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const text = await res.text();
+                alert('Texto extraído:\n\n' + text.substring(0, 500) + '...');
+                showStatus('status-ocr', 'Texto extraído exitosamente!', 'success');
+            } catch(e) {
+                showStatus('status-ocr', e.message, 'warning');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Extraer a TXT';
+            }
+        }
+
+        async function aplicarOCRaPDF() {
+            if(!fileOCR) return;
+            showStatus('status-ocr', 'Aplicando OCR... (puede tardar)', 'processing');
+            const btn = document.getElementById('btn-ocr-pdf');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            const fd = new FormData();
+            fd.append('file', fileOCR);
+            try {
+                const res = await fetch(window.location.origin + '/api/ocr-to-pdf', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const data = await res.json();
+                const savePath = await window.pywebview.api.saveFileDialog(fileOCR.name.replace('.pdf', '_ocr.pdf'));
+                if(savePath) {
+                    await window.pywebview.api.saveFile(data.pdf_path, savePath);
+                    showStatus('status-ocr', 'PDF guardado exitosamente en: <br><strong>' + savePath + '</strong>', 'success');
+                } else {
+                    showStatus('status-ocr', 'Operación cancelada', 'warning');
+                }
+            } catch(e) {
+                showStatus('status-ocr', e.message, 'warning');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Aplicar OCR al PDF';
+            }
+        }
+
+        // EXTRAER PÁGINAS
+        function handleFileExtract(files) {
+            if(!files.length) return;
+            fileExtract = files[0];
+            document.getElementById('status-extract').textContent = 'Seleccionado: ' + fileExtract.name;
+            document.getElementById('status-extract').className = 'status show success';
+            document.getElementById('btn-extract').style.display = 'inline-block';
+            document.getElementById('btn-extract').disabled = false;
+        }
+
+        async function extraerPaginas() {
+            if(!fileExtract) return;
+            const pages = prompt('¿Qué páginas extraer? (ej: 1, 3, 5-8):');
+            if(!pages) return;
+            showStatus('status-extract', 'Extrayendo páginas...', 'processing');
+            const btn = document.getElementById('btn-extract');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            const fd = new FormData();
+            fd.append('file', fileExtract);
+            fd.append('pages', pages);
+            try {
+                const res = await fetch(window.location.origin + '/api/extract-pages', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const data = await res.json();
+                const savePath = await window.pywebview.api.saveFileDialog(fileExtract.name.replace('.pdf', '_extraido.pdf'));
+                if(savePath) {
+                    await window.pywebview.api.saveFile(data.file_path, savePath);
+                    showStatus('status-extract', 'PDF extraído guardado en: <br><strong>' + savePath + '</strong>', 'success');
+                } else {
+                    showStatus('status-extract', 'Operación cancelada', 'warning');
+                }
+            } catch(e) {
+                showStatus('status-extract', 'Error: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Extraer páginas';
+            }
+        }
+
+        // DIVIDIR PDF
+        function handleFileSplit(files) {
+            if(!files.length) return;
+            fileSplit = files[0];
+            document.getElementById('status-split').textContent = 'Seleccionado: ' + fileSplit.name;
+            document.getElementById('status-split').className = 'status show success';
+            document.getElementById('btn-split').style.display = 'inline-block';
+            document.getElementById('btn-split').disabled = false;
+        }
+
+        async function generarDivision() {
+            if(!fileSplit) return;
+            const groups = prompt('¿Cómo dividir? (ej: 1-3,4-6,7-10):');
+            if(!groups) return;
+            showStatus('status-split', 'Dividiendo PDF...', 'processing');
+            const btn = document.getElementById('btn-split');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            const fd = new FormData();
+            fd.append('file', fileSplit);
+            fd.append('groups', groups);
+            try {
+                const res = await fetch(window.location.origin + '/api/split-pdf', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const data = await res.json();
+                const savePath = await window.pywebview.api.saveFileDialog(fileSplit.name.replace('.pdf', '_dividido.zip'));
+                if(savePath) {
+                    await window.pywebview.api.saveFile(data.file_path, savePath);
+                    showStatus('status-split', 'ZIP guardado en: <br><strong>' + savePath + '</strong>', 'success');
+                } else {
+                    showStatus('status-split', 'Operación cancelada', 'warning');
+                }
+            } catch(e) {
+                showStatus('status-split', 'Error: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Dividir PDF';
+            }
+        }
+
+        // ROTAR PÁGINAS
+        function handleFileRotate(files) {
+            if(!files.length) return;
+            fileRotate = files[0];
+            document.getElementById('status-rotate').textContent = 'Seleccionado: ' + fileRotate.name;
+            document.getElementById('status-rotate').className = 'status show success';
+            document.getElementById('btn-rotate').style.display = 'inline-block';
+            document.getElementById('btn-rotate').disabled = false;
+        }
+
+        async function generarRotacion() {
+            if(!fileRotate) return;
+            const angle = prompt('¿Ángulo de rotación? (90, 180, 270):', '90');
+            if(!angle) return;
+            showStatus('status-rotate', 'Rotando páginas...', 'processing');
+            const btn = document.getElementById('btn-rotate');
+            btn.disabled = true;
+            btn.textContent = 'Procesando...';
+            const fd = new FormData();
+            fd.append('file', fileRotate);
+            fd.append('angle', angle);
+            try {
+                const res = await fetch(window.location.origin + '/api/rotate-pdf', {method:'POST', body:fd});
+                if(!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || err.error);
+                }
+                const data = await res.json();
+                const savePath = await window.pywebview.api.saveFileDialog(fileRotate.name.replace('.pdf', '_rotado.pdf'));
+                if(savePath) {
+                    await window.pywebview.api.saveFile(data.file_path, savePath);
+                    showStatus('status-rotate', 'PDF rotado guardado en: <br><strong>' + savePath + '</strong>', 'success');
+                } else {
+                    showStatus('status-rotate', 'Operación cancelada', 'warning');
+                }
+            } catch(e) {
+                showStatus('status-rotate', 'Error: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Guardar PDF rotado';
+            }
+        }
+
+        window.addEventListener('beforeunload', () => { navigator.sendBeacon('/api/shutdown'); });
+    </script>
+</body>
+</html>

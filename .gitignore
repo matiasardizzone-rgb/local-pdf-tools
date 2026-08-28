@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual env
+venv/
+env/
+.venv
+
+# Archivos temporales de la app
+temp_uploads/
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Sistema
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Scripts de parche (los que fuimos creando)
+fix_*.py
+reparar.py
+mejorar_*.py
+redisenar_*.py
+html_*.py
+dividir_pdf.py
+version_final.py

@@ -1,0 +1,9 @@
+local-pdf-tools/
+│
+├── app/                   <-- Carpeta para el código Python
+│   ├── __init__.py        <-- Archivo vacío (solo para que Python sepa que es una carpeta)
+│   ├── server.py          <-- El cerebro (lo vamos a crear ahora)
+│   └── static/            <-- Carpeta para tu HTML
+│       └── index.html     <-- Pegá acá el HTML con el modo oscuro/claro que armamos
+│
+└── requirements.txt       <-- La lista de ingredientes (lo vamos a crear ahora)
