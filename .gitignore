@@ -36,3 +36,7 @@ redisenar_*.py
 html_*.py
 dividir_pdf.py
 version_final.py
+# PyInstaller
+dist/
+build/
+*.spec

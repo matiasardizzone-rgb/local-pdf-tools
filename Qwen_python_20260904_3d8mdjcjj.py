@@ -1,4 +1,9 @@
-<!DOCTYPE html>
+import os
+
+base_dir = r"C:\Users\20233280187\Desktop\local-pdf-tools"
+html_path = os.path.join(base_dir, "app", "static", "index.html")
+
+html_content = '''<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -119,7 +124,7 @@
         <div class="footer"><span class="badge">100% local</span><span class="badge">Sin internet</span><p style="margin-top: 12px;">Local PDF Tools v0.2.0 · Matias Ardizzone</p></div>
     </div>
     <script>
-        function initTheme() { const t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.getElementById('theme-icon').textContent = t === 'light' ? '☀️' : '🌙'; }
+        function initTheme() { const t = localStorage.getItem('theme') || 'dark'; document.documentElement.setAttribute('data-theme', t); document.getElementById('theme-icon').textContent = t === 'light' ? '☀️' : ''; }
         function toggleTheme() { const c = document.documentElement.getAttribute('data-theme'); const n = c === 'light' ? 'dark' : 'light'; document.documentElement.setAttribute('data-theme', n); localStorage.setItem('theme', n); document.getElementById('theme-icon').textContent = n === 'light' ? '☀️' : '🌙'; }
         initTheme();
         let pdfFilesUnir = [], fileWord = null, fileCompress = null, fileOffice = null, fileOCR = null, fileExtract = null, fileSplit = null, fileRotate = null;
@@ -135,7 +140,7 @@
         function handleFileWord(files) { if(!files.length) return; fileWord = files[0]; document.getElementById('status-word').textContent = 'Seleccionado: ' + fileWord.name; document.getElementById('status-word').className = 'status show success'; document.getElementById('btn-word').style.display = 'inline-block'; document.getElementById('btn-word').disabled = false; }
         async function convertirAWord() { if(!fileWord) return; showStatus('status-word', 'Convirtiendo...', 'processing'); const btn = document.getElementById('btn-word'); btn.disabled = true; btn.textContent = 'Procesando...'; const fd = new FormData(); fd.append('file', fileWord); try { const res = await fetch(window.location.origin + '/api/pdf-to-word', {method:'POST', body:fd}); if(!res.ok) { const err = await res.json(); throw new Error(err.message || err.error); } const data = await res.json(); const savePath = await window.pywebview.api.saveFileDialog(fileWord.name.replace('.pdf', '.docx')); if(savePath) { await window.pywebview.api.saveFile(data.file_path, savePath); showStatus('status-word', 'Word guardado en: <br><strong>' + savePath + '</strong>', 'success'); } else { showStatus('status-word', 'Operacion cancelada', 'warning'); } } catch(e) { showStatus('status-word', 'Error: ' + e.message, 'error'); } finally { btn.disabled = false; btn.textContent = 'Convertir'; } }
         function handleFileOffice(files) { if(!files.length) return; fileOffice = files[0]; document.getElementById('status-office').textContent = 'Seleccionado: ' + fileOffice.name; document.getElementById('status-office').className = 'status show success'; document.getElementById('btn-office').style.display = 'inline-block'; document.getElementById('btn-office').disabled = false; }
-        async function convertirOfficeAPdf() { if(!fileOffice) return; showStatus('status-office', 'Convirtiendo...', 'processing'); const btn = document.getElementById('btn-office'); btn.disabled = true; btn.textContent = 'Procesando...'; const fd = new FormData(); fd.append('file', fileOffice); try { const res = await fetch(window.location.origin + '/api/office-to-pdf', {method:'POST', body:fd}); if(!res.ok) { const err = await res.json(); throw new Error(err.message || err.error); } const data = await res.json(); const savePath = await window.pywebview.api.saveFileDialog(fileOffice.name.replace(/\.[^/.]+$/, '') + '.pdf'); if(savePath) { await window.pywebview.api.saveFile(data.file_path, savePath); showStatus('status-office', 'PDF guardado en: <br><strong>' + savePath + '</strong>', 'success'); } else { showStatus('status-office', 'Operacion cancelada', 'warning'); } } catch(e) { showStatus('status-office', 'Error: ' + e.message, 'warning'); } finally { btn.disabled = false; btn.textContent = 'Convertir'; } }
+        async function convertirOfficeAPdf() { if(!fileOffice) return; showStatus('status-office', 'Convirtiendo...', 'processing'); const btn = document.getElementById('btn-office'); btn.disabled = true; btn.textContent = 'Procesando...'; const fd = new FormData(); fd.append('file', fileOffice); try { const res = await fetch(window.location.origin + '/api/office-to-pdf', {method:'POST', body:fd}); if(!res.ok) { const err = await res.json(); throw new Error(err.message || err.error); } const data = await res.json(); const savePath = await window.pywebview.api.saveFileDialog(fileOffice.name.replace(/\\.[^/.]+$/, '') + '.pdf'); if(savePath) { await window.pywebview.api.saveFile(data.file_path, savePath); showStatus('status-office', 'PDF guardado en: <br><strong>' + savePath + '</strong>', 'success'); } else { showStatus('status-office', 'Operacion cancelada', 'warning'); } } catch(e) { showStatus('status-office', 'Error: ' + e.message, 'warning'); } finally { btn.disabled = false; btn.textContent = 'Convertir'; } }
         function handleFileOCR(files) { if(!files.length) { document.getElementById('ocr-buttons').style.display = 'none'; return; } fileOCR = files[0]; document.getElementById('status-ocr').textContent = 'Seleccionado: ' + fileOCR.name; document.getElementById('status-ocr').className = 'status show success'; document.getElementById('ocr-buttons').style.display = 'flex'; document.getElementById('ocr-result').style.display = 'none'; }
         async function extraerTextoOCR() { if(!fileOCR) return; showStatus('status-ocr', 'Procesando OCR (puede tardar)...', 'processing'); const btn = document.getElementById('btn-ocr-txt'); btn.disabled = true; btn.textContent = 'Procesando...'; const fd = new FormData(); fd.append('file', fileOCR); try { const res = await fetch(window.location.origin + '/api/ocr', {method:'POST', body:fd}); if(!res.ok) { const err = await res.json(); throw new Error(err.message || err.error); } const text = await res.text(); document.getElementById('ocr-text').value = text; document.getElementById('ocr-result').style.display = 'block'; showStatus('status-ocr', 'Texto extraido exitosamente!', 'success'); document.getElementById('ocr-result').scrollIntoView({behavior:'smooth'}); } catch(e) { showStatus('status-ocr', e.message, 'warning'); } finally { btn.disabled = false; btn.textContent = 'Extraer a TXT'; } }
         async function aplicarOCRaPDF() { if(!fileOCR) return; showStatus('status-ocr', 'Aplicando OCR... (puede tardar)', 'processing'); const btn = document.getElementById('btn-ocr-pdf'); btn.disabled = true; btn.textContent = 'Procesando...'; const fd = new FormData(); fd.append('file', fileOCR); try { const res = await fetch(window.location.origin + '/api/ocr-to-pdf', {method:'POST', body:fd}); if(!res.ok) { const err = await res.json(); throw new Error(err.message || err.error); } const data = await res.json(); const savePath = await window.pywebview.api.saveFileDialog(fileOCR.name.replace('.pdf', '_ocr.pdf')); if(savePath) { await window.pywebview.api.saveFile(data.pdf_path, savePath); showStatus('status-ocr', 'PDF guardado exitosamente en: <br><strong>' + savePath + '</strong>', 'success'); } else { showStatus('status-ocr', 'Operacion cancelada', 'warning'); } } catch(e) { showStatus('status-ocr', e.message, 'warning'); } finally { btn.disabled = false; btn.textContent = 'Aplicar OCR al PDF'; } }
@@ -176,3 +181,10 @@
     </script>
 </body>
 </html>
+'''
+
+with open(html_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("OK: HTML restaurado con el diseño profesional de v0.1.0")
+print("\nEjecutá: python app\\launcher.py")
