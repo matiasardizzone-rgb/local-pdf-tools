@@ -1,0 +1,75 @@
+﻿name: Build Standalone Apps
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Permite ejecutarlo manualmente desde la web
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Linux System Dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-tk libx11-6 libxext6 libxrender1 libxtst6 libxi6 libegl1 libxcb1 poppler-utils tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng
+
+    - name: Install macOS System Dependencies
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install poppler tesseract
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flask pywebview waitress pymupdf pdf2docx docx2pdf pytesseract pdf2image pyinstaller
+
+    - name: Build Windows App
+      if: matrix.os == 'windows-latest'
+      run: |
+        pyinstaller --noconfirm --onefile --windowed --icon="localpdf-logo.ico" --add-data "app/static;app/static" --name "LocalPDFTools-Win" app/launcher.py
+
+    - name: Build Linux App
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        pyinstaller --noconfirm --onefile --windowed --add-data "app/static:app/static" --name "LocalPDFTools-Linux" app/launcher.py
+
+    - name: Build macOS App
+      if: matrix.os == 'macos-latest'
+      run: |
+        pyinstaller --noconfirm --onedir --windowed --add-data "app/static:app/static" --name "LocalPDFTools-Mac" app/launcher.py
+
+    - name: Upload Windows Artifact
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: LocalPDFTools-Windows
+        path: dist/LocalPDFTools-Win.exe
+
+    - name: Upload Linux Artifact
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: LocalPDFTools-Linux
+        path: dist/LocalPDFTools-Linux
+
+    - name: Upload macOS Artifact
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: LocalPDFTools-MacOS
+        path: dist/LocalPDFTools-Mac.app
